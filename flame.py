@@ -10,7 +10,7 @@ import argparse
 import random
 
 
-GRAPH_WIDTH = 1200
+GRAPH_WIDTH = 1800
 
 GRAPH_SIDE_WIDTH = 10
 GRAPH_TOP_HEIGHT = 35
@@ -487,8 +487,8 @@ def svg_tail():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("json_path", type=str, help="path of json file")
-    parser.add_argument("--svg_path", type=str, help="path of output svg file", default=sys.path[0] + "/SotFlame.svg")
+    parser.add_argument("-o", type=str, help="path of output svg file", default=sys.path[0] + "/SotFlame.svg")
     args = parser.parse_args()
 
-    json2svg(args.json_path, args.svg_path)
+    json2svg(args.json_path, args.o)
 
