@@ -1,6 +1,16 @@
 '''
     usage:
-    python flame.py {json path} -o {svg path| optional with default value `SotFlame.svg`}
+    python flame.py {json path} [-o {svg path} | optional with default value}]
+
+    example:
+    1. 
+        python flame.py a.json
+        this will create a.svg
+
+    2.
+        python flame.py a.json -o b.svg
+        this will create b.svg
+
 '''
 
 
@@ -487,8 +497,15 @@ def svg_tail():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("json_path", type=str, help="path of json file")
-    parser.add_argument("-o", type=str, help="path of output svg file", default=sys.path[0] + "/SotFlame.svg")
+    parser.add_argument("-o", type=str, help="path of output svg file")
     args = parser.parse_args()
+    
+    if args.o:
+        outpath = args.o
+    else:
+        outpath = "./" + args.json_path.rpartition(".")[0] + ".svg"
 
-    json2svg(args.json_path, args.o)
+    json2svg(args.json_path, outpath)
+
+    print(f"Image created at {outpath}")
 
