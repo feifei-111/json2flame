@@ -1,6 +1,6 @@
 '''
     usage:
-    python flame.py {json path} {svg path| optional with default value `SotFlame.svg`}
+    python flame.py {json path} -o {svg path| optional with default value `SotFlame.svg`}
 '''
 
 
