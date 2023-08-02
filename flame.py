@@ -1,6 +1,6 @@
 '''
     usage:
-    python flame.py {json path} [-o {svg path} | optional with default value}]
+    python flame.py {json path} [-o {svg path} | optional with default value}] [--m | need modify svg, optional]
 
     example:
     1. 
@@ -116,13 +116,26 @@ class EventNode:
         return boxes
 
 
-def json2svg(json_path, svg_path):
+def modify(event_root):
+    for record in event_root.sub_events:
+        if record.sub_events:
+            record.start_time = record.sub_events[0].start_time
+            record.end_time = record.sub_events[-1].end_time
+            record.lasted = record.end_time - record.start_time
+
+    event_root.start_time = event_root.sub_events[0].start_time
+    event_root.end_time = event_root.sub_events[-1].end_time
+    event_root.lasted = event_root.end_time - event_root.start_time
+
+
+def json2svg(json_path, svg_path, need_modify):
     with open(json_path, "r") as fp:
         json_obj = json.load(fp)
-    event_root, max_deepth = EventNode.create_from(json_obj[0])
-    if event_root.sub_events:
-        event_root.start_time = event_root.sub_events[0].start_time
-        event_root.lasted = event_root.end_time - event_root.start_time
+    event_root, max_deepth = EventNode.create_from(json_obj)
+
+    if need_modify:
+        modify(event_root)
+
     event_root.set_x_axis(GRAPH_SIDE_WIDTH, GRAPH_WIDTH - GRAPH_SIDE_WIDTH * 2)
     event_root.set_up_configs()
 
@@ -498,6 +511,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("json_path", type=str, help="path of json file")
     parser.add_argument("-o", type=str, help="path of output svg file")
+    parser.add_argument("--m", action='store_true')
     args = parser.parse_args()
     
     if args.o:
@@ -505,7 +519,7 @@ if __name__ == "__main__":
     else:
         outpath = "./" + args.json_path.rpartition(".")[0] + ".svg"
 
-    json2svg(args.json_path, outpath)
+    json2svg(args.json_path, outpath, args.m)
 
     print(f"Image created at {outpath}")
 
